@@ -12,9 +12,19 @@
   },
   "dependencies": {
     "@repo/ui": "workspace:*",
+    "@tanstack/react-query": "^5.61.3",
+    "@hookform/resolvers": "^3.9.1",
+    "axios": "^1.7.7",
     "next": "15.0.3",
+    "next-themes": "^0.4.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-hook-form": "^7.53.2",
+    "lucide-react": "^0.460.0",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "recharts": "^2.13.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@repo/eslint-config": "workspace:*",
