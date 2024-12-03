@@ -24,6 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@repo/ui/components/ui/card";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Nazwa użytkownika jest wymagana" }),
@@ -33,15 +34,16 @@ const formSchema = z.object({
 });
 
 export function LoginForm() {
+  const { push } = useRouter();
+
   const mutation = useMutation({
     mutationFn: async (formData: z.infer<typeof formSchema>) => {
       return await apiClient.post("/api/v1/auth/login", formData, {
-        withCredentials: true, // Wspiera HttpOnly cookies
+        withCredentials: true,
       });
     },
     onSuccess: () => {
-      console.log("Zalogowano pomyślnie");
-      window.location.href = "/p"; // Przekierowanie po zalogowaniu
+      push("/dashboard");
     },
     onError: (error: any) => {
       console.error("Błąd logowania:", error);
