@@ -15,7 +15,7 @@ TRPG Assistant is a PWA application for managing TRPG sessions. It allows for th
 <h2>Install</h2>
 
 ```
-docker-compose up -d
+docker compose up -d
 ```
 
 <h2>Screenshots</h2>
