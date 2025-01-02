@@ -1,37 +1,38 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
 
+export type FindOneQuery = Partial<Pick<User, 'id' | 'name'>>;
+
 @Injectable()
 export class UsersService {
-  @InjectRepository(User) private readonly _repository: Repository<User>;
+  constructor(
+    @InjectRepository(User) private readonly usersRepository: Repository<User>,
+  ) {}
 
   async findAll() {
-    const users = await this._repository.find();
+    const users = await this.usersRepository.find();
 
     return { success: true, count: users.length, data: users };
   }
 
-  async findOne(id: number) {
-    const user = await this._repository.findOne({ where: { id } });
-
-    return { success: true, data: user };
-  }
-
-  async findOneByName(name: string) {
-    const user = await this._repository.findOne({ where: { name } });
+  async findOne(query: FindOneQuery) {
+    const user = await this.usersRepository.findOne({
+      where: query,
+      relations: ['campaigns', 'sessions'],
+    });
 
     if (!user) {
-      return { success: false, data: null };
+      return null;
     }
 
-    return { success: true, data: user };
+    return user;
   }
 
   async create(data: Partial<User>) {
-    const newUser = this._repository.create(data);
-    const savedUser = await this._repository.save(newUser);
+    const newUser = this.usersRepository.create(data);
+    const savedUser = await this.usersRepository.save(newUser);
 
     return savedUser;
   }

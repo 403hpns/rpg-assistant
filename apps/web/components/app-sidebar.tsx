@@ -1,310 +1,210 @@
-"use client";
-
-import * as React from "react";
+'use client';
+import * as React from 'react';
 import {
   Book,
   BookOpen,
   Calendar,
-  ChevronsUpDown,
+  Dices,
+  Home,
   LifeBuoy,
   Map,
   PieChart,
-  Plus,
   ScrollText,
-  Send,
   Settings2,
   Sword,
   Users,
   Wand2,
-} from "lucide-react";
+} from 'lucide-react';
 
-import { NavMain } from "@/components/nav-main";
-import { NavProjects } from "@/components/nav-projects";
-import { NavSecondary } from "@/components/nav-secondary";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from '@/components/nav-main';
+import { NavProjects } from '@/components/nav-projects';
+import { NavSecondary } from '@/components/nav-secondary';
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@repo/ui/components/ui/sidebar";
-import { NavPrimary } from "./nav-primary";
-import {
-  DropdownMenuItem,
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-} from "@repo/ui/components/ui/dropdown-menu";
-import apiClient from "@/lib/axios";
-import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/hooks/use-auth";
+  SidebarTrigger,
+} from '@/components/ui/sidebar';
+import { NavPrimary } from './nav-primary';
+
+import { CampaignSwitcher } from './campaign-switcher';
+import { Separator } from './ui/separator';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
+import { Card, CardDescription, CardHeader } from './ui/card';
 
 const data = {
   user: {
-    name: "403hpns",
-    email: "",
-    avatar: "/avatars/shadcn.jpg",
+    name: '403hpns',
+    email: '',
+    avatar: '/avatars/shadcn.jpg',
   },
   navPrimary: [
     {
-      title: "Ekran startowy",
-      url: "/dashboard",
+      title: 'Ekran startowy',
+      url: '/dashboard',
+      icon: Home,
+    },
+    {
+      title: 'Kampanie',
+      url: '/dashboard/campaigns',
       icon: Book,
+      badge: '3',
     },
     {
-      title: "Kampanie",
-      url: "/dashboard/campaigns",
+      title: 'Sesje',
+      url: '/dashboard/sessions',
       icon: ScrollText,
+      badge: '21',
     },
     {
-      title: "Sesje",
-      url: "/dashboard/sessions",
-      icon: Users,
-    },
-    {
-      title: "Kalendarz",
-      url: "#",
+      title: 'Kalendarz',
+      url: '/dashboard/calendar',
       icon: Calendar,
     },
   ],
   navMain: [
     {
-      title: "Karty postaci",
-      url: "#",
+      title: 'Postacie',
+      url: '/dashboard/characters',
       icon: Users,
-      isActive: true,
-      items: [
-        {
-          title: "History",
-          url: "#",
-        },
-        {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
-      ],
     },
     {
-      title: "Przedmioty",
-      url: "#",
+      title: 'Przedmioty',
+      url: '#',
       icon: Sword,
       items: [
         {
-          title: "Genesis",
-          url: "#",
+          title: 'Genesis',
+          url: '#',
         },
         {
-          title: "Explorer",
-          url: "#",
+          title: 'Explorer',
+          url: '#',
         },
         {
-          title: "Quantum",
-          url: "#",
+          title: 'Quantum',
+          url: '#',
         },
       ],
     },
+
     {
-      title: "Scenografia",
-      url: "#",
-      icon: Map,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Lokalizacje",
-      url: "#",
+      title: 'Lokalizacje',
+      url: '#',
       icon: BookOpen,
       items: [
         {
-          title: "Introduction",
-          url: "#",
+          title: 'Introduction',
+          url: '#',
         },
         {
-          title: "Get Started",
-          url: "#",
+          title: 'Get Started',
+          url: '#',
         },
         {
-          title: "Tutorials",
-          url: "#",
+          title: 'Tutorials',
+          url: '#',
         },
         {
-          title: "Changelog",
-          url: "#",
+          title: 'Changelog',
+          url: '#',
         },
       ],
     },
     {
-      title: "Ustawienia",
-      url: "#",
+      title: 'Scenografia',
+      url: '#',
       icon: Settings2,
       items: [
         {
-          title: "General",
-          url: "#",
+          title: 'General',
+          url: '#',
         },
         {
-          title: "Team",
-          url: "#",
+          title: 'Team',
+          url: '#',
         },
         {
-          title: "Billing",
-          url: "#",
+          title: 'Billing',
+          url: '#',
         },
         {
-          title: "Limits",
-          url: "#",
+          title: 'Limits',
+          url: '#',
         },
       ],
     },
   ],
   navSecondary: [
     {
-      title: "Support",
-      url: "#",
+      title: 'Pomoc',
+      url: '#',
       icon: LifeBuoy,
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
     },
   ],
   projects: [
     {
-      name: "Generator postaci",
-      url: "#",
+      name: 'Generator postaci',
+      url: '#',
       icon: Wand2,
     },
     {
-      name: "Generator przedmiotów",
-      url: "#",
+      name: 'Generator przedmiotów',
+      url: '#',
       icon: PieChart,
     },
     {
-      name: "Generator imion",
-      url: "#",
+      name: 'Generator imion',
+      url: '#',
       icon: Map,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const [sidebarData, setSidebarData] = React.useState(data);
   const { user } = useAuth();
-  const { isMobile } = useSidebar();
 
-  const { isPending, data: campaignsList } = useQuery({
-    queryKey: ["game-campaigns"],
-    queryFn: fetchGameCampaigns,
-  });
-
-  async function fetchGameCampaigns() {
-    const { data } = await apiClient.get("/api/v1/campaigns");
-    console.log(data);
-    return data.data;
-  }
+  React.useEffect(() => {
+    console.log(user);
+  }, []);
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="sidebar" collapsible="icon" {...props}>
       <SidebarHeader>
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton
-                  size="lg"
-                  className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-                >
-                  <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
-                    logo
-                  </div>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-semibold" title="Warhammer">
-                      Warhammer
-                    </span>
-                  </div>
-                  <ChevronsUpDown className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                className="w-[--radix-dropdown-menu-trigger-width] min-w-56 rounded-lg"
-                align="start"
-                // side={isMobile ? "bottom" : "right"}
-                sideOffset={4}
-              >
-                <DropdownMenuLabel className="text-xs text-muted-foreground">
-                  Kampanie
-                </DropdownMenuLabel>
+        <div className="flex gap-2 items-center p-3">
+          <Link href="/dashboard" className="flex gap-2 items-center">
+            <Dices />
+            <strong>TRPG Assistant</strong>
+          </Link>
 
-                {!isPending ? (
-                  campaignsList.map((campaign: any, index: number) => (
-                    <DropdownMenuItem key={campaign.id} className="gap-2 p-2">
-                      <div className="aspect-square flex size-6 items-center justify-center rounded-sm border">
-                        {/* <team.logo className="size-4 shrink-0" /> */}
-                      </div>
-                      <span className="truncate">{campaign.name}</span>
-                      <DropdownMenuShortcut>⌘+{index + 1}</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                  ))
-                ) : (
-                  <span>Ładowanie...</span>
-                )}
-
-                <DropdownMenuSeparator />
-                <DropdownMenuItem className="gap-2 p-2">
-                  <div className="flex size-6 items-center justify-center rounded-md border bg-background">
-                    <Plus className="size-4" />
-                  </div>
-                  <div className="font-medium text-muted-foreground">
-                    Nowa kampania
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem>
-        </SidebarMenu>
+          <SidebarTrigger className="ml-auto" />
+        </div>
+        <Separator />
       </SidebarHeader>
       <SidebarContent>
+        <CampaignSwitcher />
+
         <NavPrimary items={data.navPrimary} />
+        <Separator />
         <NavMain items={data.navMain} />
+        <Separator />
         <NavProjects projects={data.projects} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser
-          user={{
-            name: user?.name || "",
-            email: user?.email || "",
-            avatar: "",
-          }}
-        />
+        <Card className="bg-gradient-to-tr from-muted/80 to-black/90">
+          <CardHeader>
+            <CardDescription>
+              Aplikacja w trakcie rozwoju. Część funkcjonalności może nie
+              działać.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       </SidebarFooter>
+      <Separator />
     </Sidebar>
   );
 }

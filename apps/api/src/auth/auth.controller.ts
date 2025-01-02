@@ -2,44 +2,34 @@ import {
   Controller,
   Post,
   Get,
-  Res,
-  Req,
   UseGuards,
   Body,
   HttpStatus,
   HttpCode,
+  Request,
+  Res,
+  Req,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { type Response, type Request } from 'express';
+import { RegisterDto } from './dtos/register.dto';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
-
-class LoginDto {
-  name: string;
-  password: string;
-}
-
-class RegisterDto {
-  name: string;
-  email: string;
-  password: string;
-}
+import { type Response } from 'express';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
+  @UseGuards(LocalAuthGuard)
+  @HttpCode(HttpStatus.OK)
   @Post('login')
-  @HttpCode(200)
-  async login(
-    @Body() loginDto: LoginDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const token = await this.authService.validateUserAndGenerateToken(
-      loginDto.name,
-      loginDto.password,
-    );
+  async login(@Req() req, @Res() res: Response) {
+    const user = req.user;
+    const accessToken = await this.authService.login(user);
 
-    res.cookie('jwt', token, {
+    res.cookie('access_token', accessToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
@@ -49,6 +39,7 @@ export class AuthController {
     return res.json({ message: 'Logged in successfully' });
   }
 
+  @Public()
   @Post('register')
   async register(
     @Body()
@@ -64,13 +55,15 @@ export class AuthController {
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  getProfile(@Req() req: Request & { user: any }) {
+  getProfile(@Request() req) {
+    console.log('Me invoked.');
     return req.user;
   }
 
   @Post('logout')
-  logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('jwt', {
+  @UseGuards(JwtAuthGuard)
+  async logout(@Res() res) {
+    res.clearCookie('access_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',

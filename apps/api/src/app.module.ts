@@ -6,6 +6,8 @@ import { CharactersModule } from './characters/characters.module';
 import { GameCampaignsModule } from './campaigns/game-campaigns.module';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { GameSessionsModule } from './game_sessions/game-sessions.module';
+import { InvitationsModule } from './invitations/invitations.module';
 
 @Module({
   imports: [
@@ -14,7 +16,9 @@ import { AuthModule } from './auth/auth.module';
     UsersModule,
     CharactersModule,
     GameCampaignsModule,
+    GameSessionsModule,
     AuthModule,
+    InvitationsModule,
   ],
   controllers: [],
   providers: [],

@@ -4,8 +4,8 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/ui/card";
-import { Button } from "@repo/ui/components/ui/button";
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { PlayCircle, Edit, Trash2 } from "lucide-react";
 
 interface CampaignCardProps {

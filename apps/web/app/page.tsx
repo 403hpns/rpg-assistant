@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "@repo/ui/components/ui/button";
-import { Badge } from "@repo/ui/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -8,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/ui/card";
+} from "@/components/ui/card";
 import {
   BookOpen,
   Users,

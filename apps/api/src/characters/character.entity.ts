@@ -28,8 +28,50 @@ export class Character {
   @Column({ name: 'first_name' })
   firstName: string;
 
+  @Column({ name: 'middle_name' })
+  middleName?: string;
+
   @Column({ name: 'last_name' })
   lastName: string;
+
+  @Column()
+  sex: string;
+
+  @Column()
+  age: number;
+
+  @Column()
+  height: number;
+
+  @Column()
+  weight: number;
+
+  @Column({ name: 'eye_color' })
+  eyeColor: string;
+
+  @Column({ name: 'hair_color' })
+  hairColor: string;
+
+  @Column({ name: 'star_sign' })
+  starSign: string;
+
+  @Column({ name: 'place_of_birth' })
+  placeOfBirth: string;
+
+  @Column()
+  siblings: number;
+
+  @Column()
+  race: string;
+
+  @Column({ name: 'current_proffesion' })
+  currentProffesion: string;
+
+  @Column({ name: 'previous_proffesion' })
+  previousProffesion?: string;
+
+  @Column()
+  description?: string;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

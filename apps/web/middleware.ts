@@ -1,15 +1,37 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 
-export function middleware(req: NextRequest) {
-  const jwt = req.cookies.get("jwt")?.value;
+const protectedRoutes = ['/dashboard'];
+const publicRoutes = ['/', '/login', '/register'];
 
-  if (!jwt) {
-    return NextResponse.redirect(new URL("/login", req.nextUrl));
+export default async function middleware(req: NextRequest) {
+  const path = req.nextUrl.pathname;
+  const isProtectedRoute = protectedRoutes.includes(path);
+  const isPublicRoute = publicRoutes.includes(path);
+
+  const jwt = (await cookies()).get('access_token')?.value;
+
+  if (isProtectedRoute && !jwt) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
-  NextResponse.next();
+  if (path !== '/' && isPublicRoute && jwt) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
+  }
+
+  if (!jwt && !isPublicRoute) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl));
+  }
+
+  const hasCompletedOnboarding = (await cookies()).get('onboarding')?.value;
+
+  if (jwt && !hasCompletedOnboarding && path !== '/dashboard/welcome') {
+    return NextResponse.redirect(new URL('/dashboard/welcome', req.nextUrl));
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|login).*)"],
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
 };

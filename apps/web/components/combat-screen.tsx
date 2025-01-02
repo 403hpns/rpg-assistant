@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button } from "@repo/ui/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -7,10 +7,10 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/ui/card";
-import { Input } from "@repo/ui/components/ui/input";
-import { Label } from "@repo/ui/components/ui/label";
-import { ScrollArea } from "@repo/ui/components/ui/scroll-area";
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sword, Shield, Heart, Skull } from "lucide-react";
 
 interface Combatant {

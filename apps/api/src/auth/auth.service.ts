@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -11,39 +12,19 @@ export class AuthService {
   ) {}
 
   async validateUser(name: string, password: string) {
-    console.log('Validate user: 1  ', name, password);
+    const user = await this.usersService.findOne({ name });
 
-    const user = await this.usersService.findOneByName(name);
-
-    console.log('Validate user: 2  ', user);
-
-    if (!user.success || !user.data) {
-      throw new UnauthorizedException('Invalid email or password');
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException('Invalid credentials');
     }
 
-    const isPasswordValid = await bcrypt.compare(password, user.data.password);
-    if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid email or password');
-    }
-
-    const { password: _, ...userWithoutPassword } = user.data;
+    const { password: _, ...userWithoutPassword } = user;
     return userWithoutPassword;
   }
 
-  async validateUserAndGenerateToken(
-    name: string,
-    password: string,
-  ): Promise<string> {
-    const user = await this.validateUser(name, password);
-
-    console.log('Validate user and generate token: ', user);
-
-    const payload = { sub: user.id, username: user.email };
+  async login(user: Partial<User>) {
+    const payload = { name: user.name, sub: user.id };
     return this.jwtService.sign(payload);
-  }
-
-  async decodeToken(token: string) {
-    return this.jwtService.verify(token, { secret: process.env.JWT_SECRET });
   }
 
   async registerUser(registerDto: {
@@ -53,8 +34,8 @@ export class AuthService {
   }) {
     const { name, email, password } = registerDto;
 
-    const existingUser = await this.usersService.findOneByName(name);
-    if (existingUser.success) {
+    const existingUser = await this.usersService.findOne({ name });
+    if (existingUser) {
       throw new UnauthorizedException('User with this email already exists');
     }
 

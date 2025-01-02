@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   HttpCode,
-  Inject,
   Param,
   Post,
   Put,
@@ -16,28 +15,28 @@ import { Repository } from 'typeorm';
 
 @Controller('characters')
 export class CharactersController {
-  @InjectRepository(Character)
-  private readonly _repository: Repository<Character>;
+  constructor(
+    @InjectRepository(Character)
+    private readonly characterRepository: Repository<Character>,
+  ) {}
 
   @Get()
   async findAll() {
-    const characters = await this._repository.find();
+    const characters = await this.characterRepository.find();
 
     return { success: true, count: characters.length, data: characters };
   }
 
   @Get(':id')
   async findOne(@Param('id') id: number) {
-    const character = await this._repository.findOneBy({ id });
+    const character = await this.characterRepository.findOneBy({ id });
     return character;
   }
 
   @Post()
   async create(@Body() data: CreateCharacterDto) {
-    const character = await this._repository.save({
+    const character = await this.characterRepository.save({
       ...data,
-      createdAt: new Date(),
-      updatedAt: new Date(),
     });
 
     return { success: true, data: character };
@@ -48,13 +47,13 @@ export class CharactersController {
     @Param('id') id: number,
     @Body() characterUpdate: CreateCharacterDto,
   ) {
-    const character = await this._repository.findOneBy({ id });
+    const character = await this.characterRepository.findOneBy({ id });
 
     if (!character) {
       return { success: false, data: null };
     }
 
-    const data = await this._repository.save({
+    const data = await this.characterRepository.save({
       ...character,
       ...characterUpdate,
     });
@@ -65,12 +64,12 @@ export class CharactersController {
   @Delete(':id')
   @HttpCode(204)
   async delete(@Param('id') id: number) {
-    const character = await this._repository.findOneBy({ id });
+    const character = await this.characterRepository.findOneBy({ id });
 
     if (!character) {
       return { success: false, data: null };
     }
 
-    await this._repository.remove(character);
+    await this.characterRepository.remove(character);
   }
 }

@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useMutation } from "@tanstack/react-query";
 
-import { Button } from "@repo/ui/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -14,8 +14,8 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/ui/form";
-import { Input } from "@repo/ui/components/ui/input";
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import apiClient from "@/lib/axios";
 import {
   Card,
@@ -23,7 +23,7 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/ui/card";
+} from "@/components/ui/card";
 import Link from "next/link";
 
 const formSchema = z

@@ -19,6 +19,9 @@ export class GameSession {
   @Column()
   name: string;
 
+  @Column()
+  description?: string;
+
   @ManyToOne(() => GameCampaign, (campaign) => campaign.sessions, {
     onDelete: 'CASCADE',
   })

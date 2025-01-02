@@ -1,80 +1,71 @@
-"use client";
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
-
-import { Button } from "@repo/ui/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/ui/form";
-import { Input } from "@repo/ui/components/ui/input";
-import apiClient from "@/lib/axios";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/ui/card";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/card';
+import { Loader2Icon } from 'lucide-react';
+import { startTransition, useActionState, useRef } from 'react';
+import { signIn } from '@/app/actions/auth';
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Nazwa użytkownika jest wymagana" }),
+  name: z.string().min(1, { message: 'Nazwa użytkownika jest wymagana' }),
   password: z
     .string()
-    .min(4, { message: "Hasło musi mieć co najmniej 4 znaki" }),
+    .min(4, { message: 'Hasło musi mieć co najmniej 4 znaki' }),
 });
 
 export function LoginForm() {
-  const { push } = useRouter();
-
-  const mutation = useMutation({
-    mutationFn: async (formData: z.infer<typeof formSchema>) => {
-      return await apiClient.post("/api/v1/auth/login", formData, {
-        withCredentials: true,
-      });
-    },
-    onSuccess: () => {
-      push("/dashboard");
-    },
-    onError: (error: any) => {
-      console.error("Błąd logowania:", error);
-    },
-  });
+  const [state, action, pending] = useActionState(signIn, undefined);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      password: "",
+      name: '',
+      password: '',
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    mutation.mutate(values);
-  }
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const onSubmit = form.handleSubmit(() => {
+    startTransition(() => {
+      action(new FormData(formRef.current!));
+    });
+  });
 
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
         <CardTitle className="text-2xl">Login</CardTitle>
         <CardDescription>
-          Wprowadź dane, aby zalogować się na swoje konto
+          Wprowadź dane, aby zalogować się na swoje konto.
         </CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <form
+            ref={formRef}
+            action={action}
+            onSubmit={onSubmit}
+            className="space-y-6">
             <div className="space-y-4">
-              {/* Nazwa użytkownika */}
               <FormField
                 control={form.control}
                 name="name"
@@ -113,24 +104,20 @@ export function LoginForm() {
               />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              disabled={mutation.isPending}
-            >
-              {mutation.isPending ? "Logowanie..." : "Zaloguj się"}
+            <Button type="submit" className="w-full" disabled={pending}>
+              {pending ? (
+                <div className="flex items-center gap-1.5">
+                  <Loader2Icon className="animate-spin" /> Logowanie...
+                </div>
+              ) : (
+                'Zaloguj się'
+              )}
             </Button>
 
             <div className="mt-4 text-center text-sm">
-              Nie masz konta?{" "}
+              Nie masz konta?{' '}
               <a href="/register" className="underline">
                 Zarejestruj się
-              </a>
-            </div>
-
-            <div className="text-sm text-center">
-              <a href="/" className="underline">
-                Wejdź jako gość
               </a>
             </div>
           </form>

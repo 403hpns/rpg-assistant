@@ -1,6 +1,7 @@
 {
   "name": "new-rpg-assistant",
   "private": true,
+  "version": "0.0.2",
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",

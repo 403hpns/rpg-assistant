@@ -27,6 +27,12 @@ export class User {
   @Column()
   password: string;
 
+  @Column({ default: '' })
+  avatar?: string;
+
+  @Column({ default: false })
+  onboarding: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
