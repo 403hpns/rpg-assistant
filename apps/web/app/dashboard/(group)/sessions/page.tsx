@@ -1,4 +1,4 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -6,62 +6,58 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+} from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Calendar,
   Clock,
   Users,
   MapPin,
   Scroll,
-  AlertTriangle,
-  Play,
   PlayCircle,
-  PlayCircleIcon,
-  PlayIcon,
-} from "lucide-react";
-import Link from "next/link";
+} from 'lucide-react';
+import Link from 'next/link';
+
+const sessions = [
+  {
+    id: 1,
+    campaignName: 'Wielkie Imperium Kontraatakuje',
+    date: '2023-06-15',
+    time: '19:00',
+    duration: '4 godziny',
+    players: 5,
+    location: 'Online (Discord)',
+    description:
+      'Bohaterowie zmierzą się z inwazją Chaosu na przedmieściach Altdorfu.',
+    status: 'scheduled',
+  },
+  {
+    id: 2,
+    campaignName: 'Mroczne Sekrety Altdorfu',
+    date: '2023-06-18',
+    time: '20:00',
+    duration: '3 godziny',
+    players: 4,
+    location: 'Dom Marka',
+    description:
+      'Śledztwo w sprawie tajemniczych morderstw w dzielnicy portowej nabiera tempa.',
+    status: 'scheduled',
+  },
+  {
+    id: 3,
+    campaignName: 'Klątwa Morslieba',
+    date: '2023-06-10',
+    time: '18:30',
+    duration: '5 godzin',
+    players: 6,
+    location: 'Online (Roll20)',
+    description:
+      'Drużyna odkryła starożytny artefakt związany z czerwonym księżycem.',
+    status: 'completed',
+  },
+];
 
 export default function SessionsPage() {
-  const sessions = [
-    {
-      id: 1,
-      campaignName: "Wielkie Imperium Kontraatakuje",
-      date: "2023-06-15",
-      time: "19:00",
-      duration: "4 godziny",
-      players: 5,
-      location: "Online (Discord)",
-      description:
-        "Bohaterowie zmierzą się z inwazją Chaosu na przedmieściach Altdorfu.",
-      status: "scheduled",
-    },
-    {
-      id: 2,
-      campaignName: "Mroczne Sekrety Altdorfu",
-      date: "2023-06-18",
-      time: "20:00",
-      duration: "3 godziny",
-      players: 4,
-      location: "Dom Marka",
-      description:
-        "Śledztwo w sprawie tajemniczych morderstw w dzielnicy portowej nabiera tempa.",
-      status: "scheduled",
-    },
-    {
-      id: 3,
-      campaignName: "Klątwa Morslieba",
-      date: "2023-06-10",
-      time: "18:30",
-      duration: "5 godzin",
-      players: 6,
-      location: "Online (Roll20)",
-      description:
-        "Drużyna odkryła starożytny artefakt związany z czerwonym księżycem.",
-      status: "completed",
-    },
-  ];
-
   return (
     <div className="container mx-auto flex flex-col min-h-screen">
       <main className="flex-1 container py-6">
@@ -80,7 +76,7 @@ export default function SessionsPage() {
           </div>
           <TabsContent value="upcoming" className="space-y-4">
             {sessions
-              .filter((session) => session.status === "scheduled")
+              .filter((session) => session.status === 'scheduled')
               .map((session) => (
                 <Card key={session.id}>
                   <CardHeader>
@@ -124,7 +120,7 @@ export default function SessionsPage() {
           </TabsContent>
           <TabsContent value="past" className="space-y-4">
             {sessions
-              .filter((session) => session.status === "completed")
+              .filter((session) => session.status === 'completed')
               .map((session) => (
                 <Card key={session.id}>
                   <CardHeader>

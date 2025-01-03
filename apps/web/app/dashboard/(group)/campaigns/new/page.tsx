@@ -65,7 +65,7 @@ export default function Page() {
     mutationFn: async (values: z.infer<typeof formSchema>) => {
       const { data } = await apiClient.post('/api/v1/campaigns', {
         ...values,
-        ownerId: user?.id,
+        ownerId: user?.userId,
       });
 
       if (data.success) {

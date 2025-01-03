@@ -30,10 +30,6 @@ export async function logOut() {
     });
 
     if (status === 201) {
-      toast({
-        description: 'Wylogowano.',
-      });
-
       redirect('/login');
     }
   } catch (error) {
