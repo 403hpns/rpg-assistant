@@ -1,17 +1,13 @@
 'use client';
-
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  PropsWithChildren,
-} from 'react';
+import { createContext, useState, useEffect, PropsWithChildren } from 'react';
 import apiClient from '@/lib/axios';
+import { usePathname } from 'next/navigation';
 
 type User = {
-  id: number;
+  userId: number;
   name: string;
   email: string;
+  onboarding?: boolean;
 };
 
 interface AuthContextValue {
@@ -26,9 +22,13 @@ export const AuthContext = createContext<AuthContextValue | null>(null);
 export function AuthProvider({ children }: PropsWithChildren) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const path = usePathname();
 
   useEffect(() => {
+    console.log('1');
     const fetchUser = async () => {
+      console.log('2');
+
       try {
         const { data } = await apiClient.get('/api/v1/auth/me', {
           withCredentials: true,
@@ -42,7 +42,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       }
     };
 
-    fetchUser();
+    if (path.startsWith('/dashboard')) {
+      fetchUser();
+    }
   }, []);
 
   const login = async (name: string, password: string) => {
@@ -55,7 +57,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
   };
 
   const logout = async () => {
-    await apiClient.post('/api/v1/auth/logout', {}, { withCredentials: true });
     setUser(null);
   };
 
