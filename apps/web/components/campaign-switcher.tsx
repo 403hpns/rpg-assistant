@@ -1,5 +1,4 @@
 'use client';
-
 import {
   SidebarMenu,
   SidebarMenuButton,
@@ -20,7 +19,16 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback } from './ui/avatar';
 
 export const CampaignSwitcher = () => {
-  const { isPending, data: campaignsList } = useCampaigns();
+  const {
+    isPending,
+    data: campaignsList,
+    currentCampaign,
+    switchCurrentCampaign,
+  } = useCampaigns();
+
+  function handleSwitchCampaign(name: string) {
+    switchCurrentCampaign(name);
+  }
 
   return (
     <SidebarMenu>
@@ -36,7 +44,7 @@ export const CampaignSwitcher = () => {
               <div className="grid flex-1 text-left text-sm leading-tight">
                 <small className="text-muted-foreground">Kampania</small>
                 <span className="truncate font-semibold" title="Warhammer">
-                  Warhammer
+                  {currentCampaign || ''}
                 </span>
               </div>
               <ChevronsUpDown className="ml-auto" />
@@ -53,18 +61,26 @@ export const CampaignSwitcher = () => {
 
             <div className="max-h-[50dvh] overflow-scroll">
               {!isPending ? (
-                campaignsList &&
-                campaignsList.map((campaign, index) => (
-                  <DropdownMenuItem key={campaign.id} className="gap-2 p-2">
-                    <Avatar className="size-6 border rounded-sm text-xs">
-                      <AvatarFallback className="rounded-sm">
-                        {campaign.name.slice(0, 2)}
-                      </AvatarFallback>
-                    </Avatar>
+                campaignsList ? (
+                  campaignsList.map((campaign, index) => (
+                    <DropdownMenuItem
+                      key={campaign.id}
+                      className="gap-2 p-2"
+                      onClick={() => handleSwitchCampaign(campaign.name)}>
+                      <Avatar className="size-6 border rounded-sm text-xs">
+                        <AvatarFallback className="rounded-sm">
+                          {campaign.name.slice(0, 2)}
+                        </AvatarFallback>
+                      </Avatar>
 
-                    <span className="truncate">{campaign.name}</span>
-                  </DropdownMenuItem>
-                ))
+                      <span className="truncate">{campaign.name}</span>
+                    </DropdownMenuItem>
+                  ))
+                ) : (
+                  <small className="p-2 text-muted-foreground">
+                    Brak kampani
+                  </small>
+                )
               ) : (
                 <SidebarMenuSkeleton />
               )}

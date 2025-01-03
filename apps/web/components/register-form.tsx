@@ -1,46 +1,45 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import apiClient from "@/lib/axios";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import apiClient from '@/lib/axios';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import Link from "next/link";
+} from '@/components/ui/card';
+import Link from 'next/link';
 
 const formSchema = z
   .object({
-    name: z.string().min(1, { message: "Nazwa użytkownika jest wymagana" }),
-    email: z.string().email({ message: "Podaj poprawny adres e-mail" }),
+    name: z.string().min(1, { message: 'Nazwa użytkownika jest wymagana' }),
+    email: z.string().email({ message: 'Podaj poprawny adres e-mail' }),
     password: z
       .string()
-      .min(4, { message: "Hasło musi mieć co najmniej 4 znaki" }),
+      .min(4, { message: 'Hasło musi mieć co najmniej 4 znaki' }),
     confirmPassword: z.string(),
   })
   .superRefine(({ password, confirmPassword }, ctx) => {
     if (password !== confirmPassword) {
       ctx.addIssue({
-        code: "custom",
-        path: ["confirmPassword"],
-        message: "Hasła muszą być takie same",
+        code: 'custom',
+        path: ['confirmPassword'],
+        message: 'Hasła muszą być takie same',
       });
     }
   });
@@ -48,26 +47,26 @@ const formSchema = z
 export function RegisterForm() {
   const mutation = useMutation({
     mutationFn: async (formData: z.infer<typeof formSchema>) => {
-      return await apiClient.post("/api/v1/auth/register", formData, {
-        withCredentials: true, // Wspiera HttpOnly cookies
+      return await apiClient.post('/api/v1/auth/register', formData, {
+        withCredentials: true,
       });
     },
     onSuccess: () => {
-      console.log("Zalogowano pomyślnie");
-      window.location.href = "/p"; // Przekierowanie po zalogowaniu
+      console.log('Zalogowano pomyślnie');
+      window.location.href = '/login';
     },
     onError: (error: any) => {
-      console.error("Błąd logowania:", error);
+      console.error('Błąd logowania:', error);
     },
   });
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      password: "",
-      email: "",
-      confirmPassword: "",
+      name: '',
+      password: '',
+      email: '',
+      confirmPassword: '',
     },
   });
 
@@ -87,7 +86,6 @@ export function RegisterForm() {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="space-y-4">
-              {/* Nazwa użytkownika */}
               <FormField
                 control={form.control}
                 name="name"
@@ -124,7 +122,6 @@ export function RegisterForm() {
                 )}
               />
 
-              {/* Hasło */}
               <FormField
                 control={form.control}
                 name="password"
@@ -166,9 +163,8 @@ export function RegisterForm() {
               <Button
                 type="submit"
                 className="w-full"
-                disabled={mutation.isPending}
-              >
-                {mutation.isPending ? "Logowanie..." : "Zarejestruj się"}
+                disabled={mutation.isPending}>
+                {mutation.isPending ? 'Rejestrowanie...' : 'Zarejestruj się'}
               </Button>
               <Link href="/login">
                 <Button variant="outline" className="w-full">

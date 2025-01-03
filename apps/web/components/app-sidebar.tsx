@@ -33,6 +33,8 @@ import { Separator } from './ui/separator';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';
 import { Card, CardDescription, CardHeader } from './ui/card';
+import { Progress } from './ui/progress';
+import { usePathname } from 'next/navigation';
 
 const data = {
   user: {
@@ -74,73 +76,26 @@ const data = {
       title: 'Przedmioty',
       url: '#',
       icon: Sword,
-      items: [
-        {
-          title: 'Genesis',
-          url: '#',
-        },
-        {
-          title: 'Explorer',
-          url: '#',
-        },
-        {
-          title: 'Quantum',
-          url: '#',
-        },
-      ],
+      disabled: true,
     },
 
     {
       title: 'Lokalizacje',
       url: '#',
       icon: BookOpen,
-      items: [
-        {
-          title: 'Introduction',
-          url: '#',
-        },
-        {
-          title: 'Get Started',
-          url: '#',
-        },
-        {
-          title: 'Tutorials',
-          url: '#',
-        },
-        {
-          title: 'Changelog',
-          url: '#',
-        },
-      ],
+      disabled: true,
     },
     {
       title: 'Scenografia',
       url: '#',
       icon: Settings2,
-      items: [
-        {
-          title: 'General',
-          url: '#',
-        },
-        {
-          title: 'Team',
-          url: '#',
-        },
-        {
-          title: 'Billing',
-          url: '#',
-        },
-        {
-          title: 'Limits',
-          url: '#',
-        },
-      ],
+      disabled: true,
     },
   ],
   navSecondary: [
     {
       title: 'Pomoc',
-      url: '#',
+      url: '/dashboard/help',
       icon: LifeBuoy,
     },
   ],
@@ -149,27 +104,32 @@ const data = {
       name: 'Generator postaci',
       url: '#',
       icon: Wand2,
+      disabled: true,
     },
     {
       name: 'Generator przedmiotów',
       url: '#',
       icon: PieChart,
+      disabled: true,
     },
     {
       name: 'Generator imion',
       url: '#',
       icon: Map,
+      disabled: true,
     },
   ],
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const [sidebarData, setSidebarData] = React.useState(data);
   const { user } = useAuth();
+  const pathname = usePathname();
 
   React.useEffect(() => {
     console.log(user);
   }, []);
+
+  const isActive = (url: string) => pathname === url;
 
   return (
     <Sidebar variant="sidebar" collapsible="icon" {...props}>
@@ -179,19 +139,35 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <Dices />
             <strong>TRPG Assistant</strong>
           </Link>
-
           <SidebarTrigger className="ml-auto" />
         </div>
+
         <Separator />
       </SidebarHeader>
       <SidebarContent>
         <CampaignSwitcher />
 
-        <NavPrimary items={data.navPrimary} />
+        <NavPrimary
+          items={data.navPrimary.map((item) => ({
+            ...item,
+            active: isActive(item.url),
+          }))}
+        />
         <Separator />
-        <NavMain items={data.navMain} />
+
+        <NavMain
+          items={data.navMain.map((item) => ({
+            ...item,
+            active: isActive(item.url),
+          }))}
+        />
         <Separator />
-        <NavProjects projects={data.projects} />
+        <NavProjects
+          projects={data.projects.map((item) => ({
+            ...item,
+            active: isActive(item.url),
+          }))}
+        />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>
@@ -199,7 +175,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <CardHeader>
             <CardDescription>
               Aplikacja w trakcie rozwoju. Część funkcjonalności może nie
-              działać.
+              działać poprawnie.
+              <Progress
+                title="Postęp prac nad projektem"
+                value={15}
+                className="mt-4"
+              />
             </CardDescription>
           </CardHeader>
         </Card>

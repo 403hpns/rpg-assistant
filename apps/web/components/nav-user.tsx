@@ -20,6 +20,8 @@ import {
 } from '@/components/ui/sidebar';
 import { logOut } from '@/app/actions/auth';
 import React from 'react';
+import Link from 'next/link';
+import { useAuth } from '@/hooks/use-auth';
 
 export function NavUser({
   user,
@@ -31,6 +33,7 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const { logout } = useAuth();
 
   return (
     <SidebarMenu>
@@ -41,7 +44,11 @@ export function NavUser({
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground">
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
+                <AvatarImage
+                  src={user.avatar}
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
                 <AvatarFallback className="rounded-lg">
                   {user.name.slice(0, 2)}
                 </AvatarFallback>
@@ -76,13 +83,20 @@ export function NavUser({
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Moje konto
-              </DropdownMenuItem>
+              <Link href="/dashboard/my-account">
+                <DropdownMenuItem>
+                  <BadgeCheck />
+                  Moje konto
+                </DropdownMenuItem>
+              </Link>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={logOut}>
+            <DropdownMenuItem
+              onClick={() => {
+                // FIXME: jezz...
+                logout();
+                logOut();
+              }}>
               <LogOut />
               Wyloguj się
             </DropdownMenuItem>

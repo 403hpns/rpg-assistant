@@ -5,8 +5,6 @@ export async function getServerSession() {
   const cookieStore = await cookies();
   const jwt = cookieStore.get('access_token')?.value;
 
-  console.log('JWT: ', jwt);
-
   if (!jwt) {
     return null;
   }
@@ -18,8 +16,6 @@ export async function getServerSession() {
       },
       withCredentials: true,
     });
-
-    console.log('Server session data: ', data);
 
     return data;
   } catch (error) {

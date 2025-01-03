@@ -1,5 +1,5 @@
 'use client';
-import { type LucideIcon } from 'lucide-react';
+import { LockKeyhole, type LucideIcon } from 'lucide-react';
 
 import {
   SidebarGroup,
@@ -8,6 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import Link from 'next/link';
 
 export function NavMain({
   items,
@@ -16,7 +17,8 @@ export function NavMain({
     title: string;
     url: string;
     icon: LucideIcon;
-    isActive?: boolean;
+    active?: boolean;
+    disabled?: boolean;
     items?: {
       title: string;
       url: string;
@@ -24,22 +26,27 @@ export function NavMain({
   }[];
 }) {
   return (
-    <>
-      <SidebarGroup>
-        <SidebarGroupLabel>Obecna kampania</SidebarGroupLabel>
-        <SidebarMenu>
-          {items.map((item) => (
-            <SidebarMenuItem>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.url}>
-                  <item.icon />
-                  <span>{item.title}</span>
-                </a>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-          ))}
-        </SidebarMenu>
-      </SidebarGroup>
-    </>
+    <SidebarGroup>
+      <SidebarGroupLabel>Obecna kampania</SidebarGroupLabel>
+      <SidebarMenu>
+        {items.map((item) => (
+          <SidebarMenuItem
+            key={item.title}
+            className={`${item.active && 'bg-muted/25 border border-muted rounded'}`}>
+            <SidebarMenuButton asChild tooltip={item.title}>
+              <Link
+                href={item.url}
+                className={`${item.disabled && 'pointer-events-none'}`}>
+                <item.icon />
+                <span
+                  className={`flex items-center justify-between w-full ${item.disabled && 'text-muted-foreground'}`}>
+                  {item.title} {item.disabled && <LockKeyhole size={16} />}
+                </span>
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+        ))}
+      </SidebarMenu>
+    </SidebarGroup>
   );
 }
