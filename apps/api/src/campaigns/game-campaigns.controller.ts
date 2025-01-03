@@ -22,7 +22,7 @@ export class GameCampaignsControllers {
 
   @Post()
   async create(@Body() body: CreateGameCampaignDto) {
-    const existCampaign = this.usersService.findOne({ name: body.name });
+    const existCampaign = await this.usersService.findOne({ name: body.name });
     if (existCampaign) {
       throw new ConflictException('Campaign with this name already exists');
     }

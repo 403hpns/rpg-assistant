@@ -15,7 +15,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'game_campaigns' })
-@Unique(['user', 'name'])
+@Unique(['ownerId', 'name'])
 export class GameCampaign {
   @PrimaryGeneratedColumn()
   id: number;
@@ -26,9 +26,12 @@ export class GameCampaign {
   @Column({ nullable: true })
   description?: string;
 
+  @Column({ name: 'owner_id' })
+  ownerId: number;
+
   @ManyToOne(() => User, (user) => user.campaigns, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'owner_id' })
-  user: User;
+  owner: User;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;

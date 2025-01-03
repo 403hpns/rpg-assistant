@@ -33,6 +33,9 @@ export class User {
   @Column({ default: false })
   onboarding: boolean;
 
+  @Column({ name: 'onboarding_answers', type: 'jsonb', nullable: true })
+  onboardingAnswers: string[];
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

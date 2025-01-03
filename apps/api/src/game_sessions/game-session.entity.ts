@@ -32,6 +32,9 @@ export class GameSession {
   @JoinColumn({ name: 'owner_id' })
   user: User;
 
+  @Column({ default: new Date() })
+  start_date: Date;
+
   @CreateDateColumn({ name: 'created_at' })
   created_at: Date;
 
