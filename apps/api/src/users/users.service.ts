@@ -1,14 +1,20 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
+import { type Cache } from 'cache-manager'; // ! Don't forget this import
 
 export type FindOneQuery = Partial<Pick<User, 'id' | 'name'>>;
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(CACHE_MANAGER) private cacheManager: Cache,
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
+    @InjectRepository(GameCampaign)
+    private readonly gameCampaignsRepository: Repository<GameCampaign>,
   ) {}
 
   async findAll() {
@@ -37,7 +43,37 @@ export class UsersService {
     return savedUser;
   }
 
-  async update(id: number, data: any) {}
+  async update(id: number, data: Partial<User>) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
 
-  async remove(id: number) {}
+    await this.usersRepository.update(id, data);
+
+    return { success: true, message: 'User updated' };
+  }
+
+  async remove(id: number) {
+    const user = await this.usersRepository.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    await this.usersRepository.delete(id);
+
+    return { success: true, message: 'User deleted' };
+  }
+
+  async findUserCampaigns(userId: number) {
+    console.log('Owner id: ', userId);
+    const campaigns = await this.gameCampaignsRepository.find({
+      where: { ownerId: userId },
+    });
+    if (!campaigns || campaigns.length === 0) {
+      throw new NotFoundException('No campaigns found for this user');
+    }
+
+    return campaigns;
+  }
 }
