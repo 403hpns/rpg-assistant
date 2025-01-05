@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import apiClient from '@/lib/axios';
+import { redirect } from 'next/navigation';
 
 export async function getServerSession() {
   const cookieStore = await cookies();
@@ -20,6 +21,6 @@ export async function getServerSession() {
     return data;
   } catch (error) {
     console.error('Błąd walidacji sesji:', error);
-    return null;
+    redirect('/login');
   }
 }

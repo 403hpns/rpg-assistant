@@ -65,8 +65,7 @@ export async function signIn(prevState: FormState, formData: FormData) {
 
     if (status === 200) {
       toast({
-        title: 'Zalogowano pomyślnie!',
-        description: 'Przekierowywanie do panelu...',
+        description: 'Zalogowano pomyślnie!',
       });
 
       redirect('/dashboard');
