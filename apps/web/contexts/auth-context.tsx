@@ -25,10 +25,7 @@ export function AuthProvider({ children }: PropsWithChildren) {
   const path = usePathname();
 
   useEffect(() => {
-    console.log('1');
     const fetchUser = async () => {
-      console.log('2');
-
       try {
         const { data } = await apiClient.get('/api/v1/auth/me', {
           withCredentials: true,

@@ -40,7 +40,7 @@ export default async function SidebarLayout({ children }: PropsWithChildren) {
                 <div className="flex items-center gap-2">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild className="cursor-pointer">
-                      <Bell size={20} />
+                      <Bell size={20} className="hover:scale-110" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuLabel>Powiadomienia</DropdownMenuLabel>
@@ -52,7 +52,7 @@ export default async function SidebarLayout({ children }: PropsWithChildren) {
 
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild className="cursor-pointer">
-                      <Plus size={20} />
+                      <Plus size={22} className="hover:scale-110" />
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <Link href="/dashboard/campaigns/new">
