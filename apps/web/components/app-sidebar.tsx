@@ -1,10 +1,10 @@
 'use client';
+
 import * as React from 'react';
 import {
   Book,
   BookOpen,
   Calendar,
-  Dices,
   Home,
   LifeBuoy,
   Map,
@@ -23,18 +23,17 @@ import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
-  SidebarHeader,
-  SidebarTrigger,
+  useSidebar,
 } from '@/components/ui/sidebar';
 import { NavPrimary } from './nav-primary';
 
 import { CampaignSwitcher } from './campaign-switcher';
 import { Separator } from './ui/separator';
-import Link from 'next/link';
-import { useAuth } from '@/hooks/use-auth';
 import { Card, CardDescription, CardHeader } from './ui/card';
 import { Progress } from './ui/progress';
 import { usePathname } from 'next/navigation';
+import { SidebarHeader } from './sidebar-header';
+import { useCampaigns } from '@/hooks/use-campaigns';
 
 const data = {
   user: {
@@ -49,16 +48,17 @@ const data = {
       icon: Home,
     },
     {
+      id: 'campaigns',
       title: 'Kampanie',
       url: '/dashboard/campaigns',
       icon: Book,
-      badge: '3',
+      badge: '0',
     },
     {
       title: 'Sesje',
       url: '/dashboard/sessions',
       icon: ScrollText,
-      badge: '21',
+      badge: '0',
     },
     {
       title: 'Kalendarz',
@@ -122,37 +122,40 @@ const data = {
 };
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { user } = useAuth();
+  const [sidebarData, setSidebarData] = React.useState<typeof data>(data);
+  const { open } = useSidebar();
+  const { campaigns } = useCampaigns();
   const pathname = usePathname();
-
-  React.useEffect(() => {
-    console.log(user);
-  }, []);
 
   const isActive = (url: string) => pathname === url;
 
+  React.useEffect(() => {
+    if (!campaigns) return;
+
+    setSidebarData((prev) => ({
+      ...prev,
+      navPrimary: prev.navPrimary.map((item) =>
+        item.id === 'campaigns'
+          ? { ...item, badge: campaigns.length.toString() }
+          : item
+      ),
+    }));
+  }, [campaigns]);
+
   return (
     <Sidebar variant="sidebar" collapsible="icon" {...props}>
-      <SidebarHeader>
-        <div className="flex gap-2 items-center p-3">
-          <Link href="/dashboard" className="flex gap-2 items-center">
-            <Dices />
-            <strong>TRPG Assistant</strong>
-          </Link>
-          <SidebarTrigger className="ml-auto" />
-        </div>
+      <SidebarHeader />
 
-        <Separator />
-      </SidebarHeader>
       <SidebarContent>
         <CampaignSwitcher />
 
         <NavPrimary
-          items={data.navPrimary.map((item) => ({
+          items={sidebarData.navPrimary.map((item) => ({
             ...item,
             active: isActive(item.url),
           }))}
         />
+
         <Separator />
 
         <NavMain
@@ -161,30 +164,36 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             active: isActive(item.url),
           }))}
         />
+
         <Separator />
+
         <NavProjects
           projects={data.projects.map((item) => ({
             ...item,
             active: isActive(item.url),
           }))}
         />
+
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
-      <SidebarFooter>
-        <Card className="bg-gradient-to-tr from-muted/80 to-black/90">
-          <CardHeader>
-            <CardDescription>
-              Aplikacja w trakcie rozwoju. Część funkcjonalności może nie
-              działać poprawnie.
-              <Progress
-                title="Postęp prac nad projektem"
-                value={15}
-                className="mt-4"
-              />
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </SidebarFooter>
+      {open ? (
+        <SidebarFooter>
+          <Card className="bg-gradient-to-tr from-muted/80 to-black/90">
+            <CardHeader>
+              <CardDescription>
+                Aplikacja w trakcie rozwoju. Część funkcjonalności może nie
+                działać poprawnie.
+                <Progress
+                  title="Postęp prac nad projektem"
+                  value={15}
+                  className="mt-4"
+                />
+              </CardDescription>
+            </CardHeader>
+          </Card>
+        </SidebarFooter>
+      ) : null}
+
       <Separator />
     </Sidebar>
   );

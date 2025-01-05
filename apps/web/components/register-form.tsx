@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
+import { Loader2 } from 'lucide-react';
 
 const formSchema = z
   .object({
@@ -164,7 +165,14 @@ export function RegisterForm() {
                 type="submit"
                 className="w-full"
                 disabled={mutation.isPending}>
-                {mutation.isPending ? 'Rejestrowanie...' : 'Zarejestruj się'}
+                {mutation.isPending ? (
+                  <span className="flex items-center gap-2">
+                    <Loader2 className="animate-spin" />
+                    Rejestrowanie...
+                  </span>
+                ) : (
+                  'Zarejestruj się'
+                )}
               </Button>
               <Link href="/login">
                 <Button variant="outline" className="w-full">

@@ -1,14 +1,14 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -17,26 +17,27 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { toast } from "@/hooks/use-toast";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useMutation } from "@tanstack/react-query";
-import apiClient from "@/lib/axios";
-import { useAuth } from "@/hooks/use-auth";
+} from '@/components/ui/select';
+import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { useMutation } from '@tanstack/react-query';
+import apiClient from '@/lib/axios';
+import { useAuth } from '@/hooks/use-auth';
+import { useCampaigns } from '@/hooks/use-campaigns';
 
 const formSchema = z.object({
-  campaign: z.string({ required_error: "Musisz wybrać kampanię." }),
-  name: z.string({ required_error: "Musisz nadać nazwę kampani." }),
+  campaign: z.string({ required_error: 'Musisz wybrać kampanię.' }),
+  name: z.string({ required_error: 'Musisz nadać nazwę kampani.' }),
   description: z.string().optional(),
   date: z.string(),
   time: z.string(),
@@ -44,13 +45,14 @@ const formSchema = z.object({
     .string()
     .transform((val) => Number(val))
     .refine((val) => val >= 1, {
-      message: "Wprowadź liczbę większą lub równą 1.",
+      message: 'Wprowadź liczbę większą lub równą 1.',
     })
     .optional(),
 });
 
 export default function NewSessionPage() {
   const { user } = useAuth();
+  const { campaigns } = useCampaigns();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -58,15 +60,14 @@ export default function NewSessionPage() {
 
   const mutation = useMutation({
     mutationFn: async (formValues: z.infer<typeof formSchema>) => {
-      const { data } = await apiClient.post("/api/v1/sessions", {
+      const { data } = await apiClient.post('/api/v1/sessions', {
         ...formValues,
-        ownerId: user?.id,
+        ownerId: user?.userId,
       });
 
       if (data.success) {
         toast({
-          title: "Operacja udana",
-          description: "Pomyślnie utworzono sesję.",
+          description: 'Pomyślnie utworzono sesję.',
         });
       }
     },
@@ -76,7 +77,7 @@ export default function NewSessionPage() {
     mutation.mutate(values);
 
     toast({
-      title: "You submitted the following values:",
+      title: 'You submitted the following values:',
       description: (
         <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
           <code className="text-white">{JSON.stringify(values, null, 2)}</code>
@@ -99,8 +100,7 @@ export default function NewSessionPage() {
             <Form {...form}>
               <form
                 onSubmit={form.handleSubmit(handleSubmit)}
-                className="space-y-6"
-              >
+                className="space-y-6">
                 <FormField
                   control={form.control}
                   name="campaign"
@@ -110,23 +110,20 @@ export default function NewSessionPage() {
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
-                        {...field}
-                      >
+                        {...field}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Wybierz kampanię" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="empire">
-                            Wielkie Imperium Kontraatakuje
-                          </SelectItem>
-                          <SelectItem value="altdorf">
-                            Mroczne Sekrety Altdorfu
-                          </SelectItem>
-                          <SelectItem value="morrslieb">
-                            Klątwa Morslieba
-                          </SelectItem>
+                          {campaigns.map((campaign) => (
+                            <SelectItem
+                              key={campaign.id}
+                              value={campaign.id.toString()}>
+                              {campaign.name}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />

@@ -1,4 +1,5 @@
 import { ChartOne } from '@/components/chart-one';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -127,14 +128,16 @@ export default async function Page() {
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             <Card className="col-span-2">
               <CardHeader>
-                <CardTitle>Nadchodzące wydarzenia</CardTitle>
+                <CardTitle className="w-full flex items-center gap-2">
+                  Nadchodzące wydarzenia <Badge>Moduł w trakcie rozwoju</Badge>
+                </CardTitle>
                 <CardDescription>
                   Zaplanowane sesje i ważne daty
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-4">
-                  <li className="flex items-center justify-between p-2 bg-primary/5 rounded-lg">
+                  <li className="flex items-center justify-between p-2 bg-secondary/5 rounded-lg">
                     <div className="flex items-center gap-4">
                       <Calendar className="h-6 w-6 text-primary" />
                       <div>
@@ -192,12 +195,12 @@ export default async function Page() {
               </CardHeader>
               <CardContent className="grid gap-4">
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="/campaigns/new">
+                  <Link href="/dashboard/campaigns/new">
                     Stwórz nową kampanię <ChevronRight />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="w-full">
-                  <Link href="/campaigns">
+                  <Link href="/dashboard/sessions/new">
                     Zaplanuj nową sesję <ChevronRight />
                   </Link>
                 </Button>
