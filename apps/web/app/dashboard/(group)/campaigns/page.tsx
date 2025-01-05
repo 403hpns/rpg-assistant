@@ -12,34 +12,10 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { PlusCircle, Search, Users, Calendar, Scroll } from 'lucide-react';
 import Link from 'next/link';
-import { useQuery } from '@tanstack/react-query';
-import apiClient from '@/lib/axios';
-
-type GameCampaign = {
-  id: number;
-  title: string;
-  description: string;
-  players: number;
-  sessions: number;
-  nextSession: number;
-};
+import { useCampaigns } from '@/hooks/use-campaigns';
 
 export default function CampaignsPage() {
-  const getGameCampaigns = async () => {
-    try {
-      const { data } = await apiClient.get('/api/v1/campaigns');
-      if (!data.success) return;
-
-      return data.data;
-    } catch (error) {
-      //
-    }
-  };
-
-  const { data: campaigns, isPending } = useQuery({
-    queryKey: ['game-campaigns'],
-    queryFn: getGameCampaigns,
-  });
+  const { campaigns, isLoading } = useCampaigns();
 
   return (
     <div className="container mx-auto flex flex-col min-h-screen">
@@ -67,11 +43,11 @@ export default function CampaignsPage() {
             </div>
           </div>
           <TabsContent value="active" className="space-y-4">
-            {!isPending &&
+            {!isLoading &&
               campaigns.map((campaign) => (
                 <Card key={campaign.id}>
                   <CardHeader>
-                    <CardTitle>{campaign.title}</CardTitle>
+                    <CardTitle>{campaign.name}</CardTitle>
                     <CardDescription>{campaign.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -92,7 +68,7 @@ export default function CampaignsPage() {
                   </CardContent>
                   <CardFooter className="flex gap-1.5">
                     <Button variant="outline">Szczegóły</Button>
-                    <Button>Uruchom kampanię</Button>
+                    <Button>Przejdź do kampani</Button>
                   </CardFooter>
                 </Card>
               ))}

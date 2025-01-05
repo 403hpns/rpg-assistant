@@ -1,6 +1,10 @@
-import { PropsWithChildren, createContext, useState } from 'react';
+'use client';
+
+import { PropsWithChildren, createContext, useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import apiClient from '@/lib/axios';
+import { useAuth } from '@/hooks/use-auth';
+import { useRouter } from 'next/navigation';
 
 type Campaign = {
   id: number;
@@ -11,7 +15,7 @@ type Campaign = {
 type NewCampaign = Omit<Campaign, 'id'>;
 
 type CampaignContext = {
-  campaigns: Campaign[] | undefined;
+  campaigns: Campaign[];
   currentCampaign: Campaign | null;
   isLoading: boolean;
   error: Error | null;
@@ -21,11 +25,15 @@ type CampaignContext = {
 
 export const CampaignContext = createContext<CampaignContext | null>(null);
 
+const cacheKey = 'gameCampaign:current';
+
 export function CampaignProvider({ children }: PropsWithChildren) {
   const [currentCampaignId, setCurrentCampaignId] = useState<number | null>(
     null
   );
   const queryClient = useQueryClient();
+  const { user } = useAuth();
+  const router = useRouter();
 
   const {
     data: campaigns = [],
@@ -34,28 +42,84 @@ export function CampaignProvider({ children }: PropsWithChildren) {
   } = useQuery({
     queryKey: ['game-campaigns'],
     queryFn: async () => {
-      const response = await apiClient.get<Campaign[]>('/api/v1/campaigns');
-      return response.data;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        controller.abort();
+      }, 5000);
+
+      try {
+        const response = await apiClient.get(
+          `/api/v1/users/${user?.userId}/campaigns`,
+          {
+            signal: controller.signal,
+          }
+        );
+        return response.data as Campaign[];
+      } finally {
+        clearTimeout(timeoutId);
+      }
     },
+    enabled: !!user?.userId,
   });
 
   const createCampaignMutation = useMutation<void, Error, NewCampaign>({
     mutationFn: async (newCampaign) => {
-      await apiClient.post<Campaign>('/api/campaigns', newCampaign);
+      await apiClient.post<Campaign>(
+        `/api/v1/${user?.userId}/campaigns`,
+        newCampaign
+      );
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['campaigns'] });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ['game-campaigns'] }),
   });
 
-  const currentCampaign =
-    campaigns.find((c) => c.id === currentCampaignId) ?? null;
+  const isValidCampaign = (id: number) => {
+    return campaigns.find((c) => c.id === id);
+  };
+
+  const currentCampaign = currentCampaignId
+    ? (campaigns.find((c) => c.id === currentCampaignId) ?? null)
+    : null;
 
   const createCampaign = async (campaign: NewCampaign) => {
     await createCampaignMutation.mutateAsync(campaign);
   };
 
-  const switchCampaign = (id: number) => setCurrentCampaignId(id);
+  const switchCampaign = (id: number) => {
+    if (!isValidCampaign(id)) {
+      return;
+    }
+
+    setCurrentCampaignId(id);
+    localStorage.setItem(cacheKey, JSON.stringify(id));
+  };
+
+  // Retrieve chosen campaign from local storage
+  useEffect(() => {
+    if (!user || !campaigns || !campaigns.length) {
+      return;
+    }
+
+    const campaign = localStorage.getItem(cacheKey);
+    if (campaign == null || campaign === '') {
+      return;
+    }
+
+    // Forbidden campaign
+    if (!isValidCampaign(+campaign)) {
+      const firstValidCampaign = campaigns[0]?.id;
+
+      if (!firstValidCampaign) {
+        return router.push('/dashboard/campaigns/new');
+      }
+
+      localStorage.setItem(cacheKey, JSON.stringify(firstValidCampaign));
+      setCurrentCampaignId(+firstValidCampaign);
+      return;
+    }
+
+    setCurrentCampaignId(+campaign);
+  }, [campaigns, user]);
 
   const contextValue = {
     campaigns,

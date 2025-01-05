@@ -22,8 +22,10 @@ import { useAuth } from '@/hooks/use-auth';
 import { toast } from '@/hooks/use-toast';
 import apiClient from '@/lib/axios';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
 import { Loader2Icon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -34,20 +36,11 @@ const formSchema = z.object({
 
 export default function Page() {
   const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-  });
-
-  const getGameCampaigns = async () => {
-    //
-    const { data } = await apiClient.get('/api/v1/campaigns');
-    return data;
-  };
-
-  const query = useQuery({
-    queryKey: ['game-sessions'],
-    queryFn: getGameCampaigns,
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
@@ -63,26 +56,46 @@ export default function Page() {
 
   const newCampaignMutation = useMutation({
     mutationFn: async (values: z.infer<typeof formSchema>) => {
-      const { data } = await apiClient.post('/api/v1/campaigns', {
-        ...values,
-        ownerId: user?.userId,
-      });
-
-      if (data.success) {
-        form.reset();
-
-        toast({
-          description: `Pomyślnie utworzono kampanię ${values.name}.`,
+      try {
+        const { data, status } = await apiClient.post('/api/v1/campaigns', {
+          ...values,
+          ownerId: user?.userId,
         });
-      } else {
-        toast({
-          title: 'Wystąpił problem',
-          description: 'Nie udało się stworzyć kampani.',
-          action: (
-            <ToastAction altText="Try again">Spróbuj ponownie</ToastAction>
-          ),
-        });
+
+        if (data.success) {
+          form.reset();
+
+          toast({
+            description: `Pomyślnie utworzono kampanię ${values.name}.`,
+          });
+
+          router.push(`/dashboard/campaigns/${data.data.id}`);
+        }
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          switch (error.status) {
+            case 409: {
+              toast({
+                title: 'Wystąpił problem',
+                description: 'Kampania o podanej nazwie już istnieje.',
+                action: (
+                  <ToastAction
+                    altText="Try again"
+                    onClick={() =>
+                      newCampaignMutation.mutate(form.getValues())
+                    }>
+                    Spróbuj ponownie
+                  </ToastAction>
+                ),
+              });
+              break;
+            }
+          }
+        }
       }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['game-campaigns'] });
     },
   });
 
