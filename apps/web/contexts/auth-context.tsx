@@ -1,65 +1,55 @@
 'use client';
-import { createContext, useState, useEffect, PropsWithChildren } from 'react';
-import apiClient from '@/lib/axios';
+
+import { createContext, PropsWithChildren } from 'react';
 import { usePathname } from 'next/navigation';
+import apiClient from '@/lib/axios';
+import { useQuery } from '@tanstack/react-query';
 
 type User = {
   userId: number;
   name: string;
   email: string;
-  onboarding?: boolean;
 };
 
-interface AuthContextValue {
+type AuthContext = {
   user: User | null;
   isLoading: boolean;
   login: (name: string, password: string) => Promise<void>;
   logout: () => void;
-}
+};
 
-export const AuthContext = createContext<AuthContextValue | null>(null);
+export const AuthContext = createContext<AuthContext | null>(null);
 
 export function AuthProvider({ children }: PropsWithChildren) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const path = usePathname();
 
-  useEffect(() => {
-    const fetchUser = async () => {
-      try {
-        const { data } = await apiClient.get('/api/v1/auth/me', {
-          withCredentials: true,
-        });
-
-        setUser(data);
-      } catch {
-        setUser(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    if (path.startsWith('/dashboard')) {
-      fetchUser();
-    }
-  }, []);
+  const { data: user, isLoading } = useQuery({
+    queryKey: ['user'],
+    queryFn: async () => {
+      const { data } = await apiClient.get('/api/v1/auth/me');
+      return data;
+    },
+    enabled: path.startsWith('/dashboard'),
+  });
 
   const login = async (name: string, password: string) => {
-    const { data } = await apiClient.post(
+    await apiClient.post(
       '/api/v1/auth/login',
       { name, password },
       { withCredentials: true }
     );
-    setUser(data.user);
   };
 
-  const logout = async () => {
-    setUser(null);
+  const logout = () => {};
+
+  const contextValue = {
+    user,
+    isLoading,
+    login,
+    logout,
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
