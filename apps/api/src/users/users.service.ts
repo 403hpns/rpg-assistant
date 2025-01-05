@@ -1,7 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { GameCampaign } from 'src/campaigns/game-campaign.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { type Cache } from 'cache-manager'; // ! Don't forget this import
@@ -15,6 +15,7 @@ export class UsersService {
     @InjectRepository(User) private readonly usersRepository: Repository<User>,
     @InjectRepository(GameCampaign)
     private readonly gameCampaignsRepository: Repository<GameCampaign>,
+    private readonly dataSource: DataSource,
   ) {}
 
   async findAll() {
@@ -37,10 +38,18 @@ export class UsersService {
   }
 
   async create(data: Partial<User>) {
-    const newUser = this.usersRepository.create(data);
-    const savedUser = await this.usersRepository.save(newUser);
+    return this.dataSource.transaction(async (manager) => {
+      const newUser = this.usersRepository.create(data);
+      const savedUser = await manager.save(User, newUser);
 
-    return savedUser;
+      const newDefaultCampaign = manager.create(GameCampaign, {
+        name: 'Domyślna kampania',
+        ownerId: savedUser.id,
+      });
+      await manager.save(GameCampaign, newDefaultCampaign);
+
+      return savedUser;
+    });
   }
 
   async update(id: number, data: Partial<User>) {
@@ -66,7 +75,6 @@ export class UsersService {
   }
 
   async findUserCampaigns(userId: number) {
-    console.log('Owner id: ', userId);
     const campaigns = await this.gameCampaignsRepository.find({
       where: { ownerId: userId },
     });
