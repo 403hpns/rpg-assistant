@@ -10,7 +10,7 @@ TRPG Assistant is a PWA application for managing TRPG sessions. It allows for th
 
 <h2>Live demo</h2>
 
-[https://403hpns.dev/projects/rpg-assistant](https://403hpns.dev/projects/rpg-assistant)
+soon 
 
 
 <h2>Install</h2>
