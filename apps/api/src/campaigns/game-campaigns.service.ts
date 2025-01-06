@@ -22,6 +22,7 @@ export class GameCampaignService {
   async findOne(query: FindOneQuery) {
     const gameCampaign = await this.gameCampaignRepository.findOne({
       where: query,
+      relations: ['characters'],
     });
 
     return gameCampaign;
@@ -51,5 +52,16 @@ export class GameCampaignService {
     await this.gameCampaignRepository.save(gameCampaign);
 
     return gameCampaign;
+  }
+
+  async getCampaignCharacters(campaignId: number) {
+    const campaign = await this.findOne({ id: campaignId });
+    if (!campaign) {
+      throw new NotFoundException('Campaign with given id does not exist');
+    }
+
+    console.log(campaign);
+
+    return campaign.characters;
   }
 }

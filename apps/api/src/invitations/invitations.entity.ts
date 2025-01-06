@@ -14,11 +14,9 @@ export class Invitation {
   @Column()
   code: string;
 
-  //   Add relation
   @Column()
   campaignId: number;
 
-  //   Add relation
   @Column()
   userId: number;
 

@@ -1,4 +1,4 @@
-import { Body, ConflictException, Controller, Get, Post } from '@nestjs/common';
+import { Body, ConflictException, Controller, Get, Param, Post } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GameCampaign } from './game-campaign.entity';
 import { Repository } from 'typeorm';
@@ -37,5 +37,10 @@ export class GameCampaignsControllers {
     });
 
     return { success: true, data: campaign };
+  }
+
+  @Get(':id/characters')
+  async getCampaignCharacters(@Param("id") id: string) {
+    return this.gameCampaignService.getCampaignCharacters(+id);
   }
 }

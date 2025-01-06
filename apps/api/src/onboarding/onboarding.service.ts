@@ -24,7 +24,6 @@ export class OnboardingService {
       await this.cacheManager.set(cacheKey, user.onboarding);
     }
 
-    console.log('Onboarding status: ', status);
     return { hasOnboarding: status };
   }
 

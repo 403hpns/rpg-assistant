@@ -22,9 +22,6 @@ export class StatsService {
     endOfWeek.setDate(endOfWeek.getDate() + 6);
     endOfWeek.setHours(23, 59, 59, 999);
 
-    console.log('startOfWeek:', startOfWeek);
-    console.log('endOfWeek:', endOfWeek);
-
     const data = await this.gameCampaignRepository
       .createQueryBuilder('campaign')
       .select([`COUNT(DISTINCT campaign.id) as campaigns`])
@@ -80,9 +77,6 @@ export class StatsService {
             (1000 * 3600 * 24),
         )
       : null;
-
-    console.log('Fetched Data:', data);
-    console.log('Days to next session:', daysToNextSession);
 
     return {
       campaignCount: +data.campaigns || 0,

@@ -12,11 +12,7 @@ import { Repository } from 'typeorm';
 import { User } from 'src/users/user.entity';
 import { GameCampaign } from 'src/campaigns/game-campaign.entity';
 import { GameCampaignService } from 'src/campaigns/game-campaigns.service';
-
-export class GenerateInviteDto {
-  userId: number;
-  campaignId: number;
-}
+import { GenerateInviteDto } from './dtos/generate-invite.dto';
 
 @Injectable()
 export class InvitationsService {
@@ -44,10 +40,7 @@ export class InvitationsService {
     return inviteCode;
   }
 
-  async joinCampaignWithInvite(
-    inviteCode: string,
-    userId: string,
-  ): Promise<string> {
+  async joinCampaignWithInvite(inviteCode: string, userId: string) {
     const invitation = await this.invitationRepository.findOne({
       where: { code: inviteCode },
     });
@@ -87,6 +80,6 @@ export class InvitationsService {
 
     await this.campaignRepository.save(campaign);
 
-    return 'Successfully joined the campaign';
+    return { message: 'Successfully joined the campaign' };
   }
 }

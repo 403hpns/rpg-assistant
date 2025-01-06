@@ -4,7 +4,7 @@ import { User } from './user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { GameCampaign } from 'src/campaigns/game-campaign.entity';
 import { CACHE_MANAGER } from '@nestjs/cache-manager';
-import { type Cache } from 'cache-manager'; // ! Don't forget this import
+import { type Cache } from 'cache-manager';
 
 export type FindOneQuery = Partial<Pick<User, 'id' | 'name'>>;
 
