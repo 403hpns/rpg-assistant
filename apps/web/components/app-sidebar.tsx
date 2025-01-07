@@ -178,7 +178,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarContent>
       {open ? (
         <SidebarFooter>
-          <Card className="bg-gradient-to-tr from-muted/80 to-black/90">
+          <Card className="bg-gradient-to-tr dark:from-muted/80 dark:to-black/90 from-neutral-200 to-white/50">
             <CardHeader>
               <CardDescription>
                 Aplikacja w trakcie rozwoju. Część funkcjonalności może nie

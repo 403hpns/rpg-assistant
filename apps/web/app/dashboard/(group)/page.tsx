@@ -155,7 +155,7 @@ export default async function Page() {
                   </li>
                   <li className="flex items-center justify-between p-2 bg-secondary/5 rounded-lg">
                     <div className="flex items-center gap-4">
-                      <Star className="h-6 w-6 text-secondary" />
+                      <Star className="h-6 w-6 text-primary" />
                       <div>
                         <p className="font-medium">Urodziny gracza: Janush</p>
                         <p className="text-sm text-muted-foreground">
@@ -169,7 +169,7 @@ export default async function Page() {
                   </li>
                   <li className="flex items-center justify-between p-2 bg-accent/5 rounded-lg">
                     <div className="flex items-center gap-4">
-                      <Calendar className="h-6 w-6 text-accent" />
+                      <Calendar className="h-6 w-6 text-primary" />
                       <div>
                         <p className="font-medium">
                           Sesja "Mroczne Sekrety Altdorfu"
