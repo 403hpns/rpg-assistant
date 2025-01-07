@@ -28,6 +28,8 @@ docker compose up -d
 <p align="center">
   
 ![image](https://github.com/user-attachments/assets/f672918d-24d6-4aa3-b732-9231782e5f14)
+![image](https://github.com/user-attachments/assets/d47ad687-959c-4686-8f38-90269f8f276f)
+
 
 </p>
 
