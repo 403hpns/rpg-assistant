@@ -1,6 +1,6 @@
 'use client';
-import { signIn } from '@/app/actions/auth';
-import { joinCampaignWithInvite } from '@/app/actions/join-campaign-by-code';
+import { signIn } from '@/app/[locale]/actions/auth';
+import { joinCampaignWithInvite } from '@/app/[locale]/actions/join-campaign-by-code';
 import { Button } from '@/components/ui/button';
 import {
   Card,

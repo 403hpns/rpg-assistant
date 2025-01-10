@@ -22,7 +22,7 @@ import {
 } from '@/components/ui/card';
 import { Loader2Icon } from 'lucide-react';
 import { startTransition, useActionState, useRef } from 'react';
-import { signIn } from '@/app/actions/auth';
+import { signIn } from '@/app/[locale]/actions/auth';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Nazwa użytkownika jest wymagana' }),
