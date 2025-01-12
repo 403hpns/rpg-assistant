@@ -1,6 +1,6 @@
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   Card,
   CardContent,
@@ -8,17 +8,13 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import {
-  BookOpen,
-  Users,
-  Dice1Icon as Dice,
-  Swords,
-  ChevronRight,
-  Dices,
-} from "lucide-react";
+} from '@/components/ui/card';
+import { BookOpen, Users, Swords, ChevronRight, Dices } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const t = await getTranslations('Home');
+
   return (
     <div className="flex flex-col min-h-screen">
       <nav className="z-50 backdrop-blur-3xl opacity-95 fixed top-0 w-full left-0 lg:px-6 h-16 py-8 flex items-center bg-secondary/15">
@@ -29,20 +25,17 @@ export default function LandingPage() {
         <div className="ml-auto flex gap-8">
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
-            href="#features"
-          >
+            href="#features">
             Funkcje
           </Link>
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
-            href="#testimonials"
-          >
+            href="#testimonials">
             Opinie
           </Link>
           <Link
             className="text-sm font-medium hover:underline underline-offset-4"
-            href="#pricing"
-          >
+            href="#pricing">
             Cennik
           </Link>
         </div>
@@ -52,9 +45,9 @@ export default function LandingPage() {
           <div className="container mx-auto px-4 md:px-6">
             <div className="flex flex-col items-center space-y-4 text-center">
               <div className="space-y-2">
-                <Badge>W trakcie rozwoju</Badge>
+                <Badge>{t('header.badge')}</Badge>
                 <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl lg:text-6xl/none">
-                  Twój idealny Asystent RPG
+                  {t('header.heading')}
                 </h1>
                 <p className="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
                   Prowadź epickie kampanie, zarządzaj sesjami i postaciami z
@@ -75,8 +68,7 @@ export default function LandingPage() {
         </section>
         <section
           id="features"
-          className="w-full py-12 md:py-24  bg-popover border-y"
-        >
+          className="w-full py-12 md:py-24  bg-popover border-y">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Funkcje
@@ -134,8 +126,7 @@ export default function LandingPage() {
         </section>
         <section
           id="testimonials"
-          className="w-full py-12 md:py-24 lg:py-32 bg-secondary/15"
-        >
+          className="w-full py-12 md:py-24 lg:py-32 bg-secondary/15">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Co mówią nasi użytkownicy
@@ -195,8 +186,7 @@ export default function LandingPage() {
         </section>
         <section
           id="pricing"
-          className="w-full py-12 md:py-24 lg:py-32 bg-background"
-        >
+          className="w-full py-12 md:py-24 lg:py-32 bg-background">
           <div className="container mx-auto px-4 md:px-6">
             <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl text-center mb-12">
               Wybierz plan dla siebie

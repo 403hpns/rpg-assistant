@@ -18,7 +18,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { logOut } from '@/app/actions/auth';
+import { logOut } from '@/app/[locale]/actions/auth';
 import React from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/use-auth';

@@ -1,7 +1,5 @@
 'use server';
-
 import { z } from 'zod';
-import { toast } from '@/hooks/use-toast';
 import { AxiosError } from 'axios';
 import apiClient from '@/lib/axios';
 
@@ -67,28 +65,30 @@ export async function createCharacter(prevState: any, formData: FormData) {
     );
 
     if (status === 201 && data.success) {
-      toast({
-        description: 'Character created successfully',
-      });
+      // toast({
+      //   description: 'Character created successfully',
+      // });
     }
   } catch (error) {
     console.log(error);
     if (error instanceof AxiosError) {
-      switch (error.status) {
-        case 401: {
-          toast({
-            title: 'Error',
-            description: 'Unauthorized',
-          });
-        }
+      switch (
+        error.status
+        // case 401: {
+        //   toast({
+        //     title: 'Error',
+        //     description: 'Unauthorized',
+        //   });
+        // }
 
-        case 404: {
-          toast({
-            title: 'Error',
-            description: 'Character not found',
-          });
-          break;
-        }
+        // case 404: {
+        //   toast({
+        //     title: 'Error',
+        //     description: 'Character not found',
+        //   });
+        //   break;
+        // }
+      ) {
       }
     }
   }

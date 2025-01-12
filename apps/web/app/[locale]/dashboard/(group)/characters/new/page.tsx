@@ -1,5 +1,5 @@
 'use client';
-import { createCharacter } from '@/app/actions/create-character';
+import { createCharacter } from '@/app/[locale]/actions/create-character';
 import { Button } from '@/components/ui/button';
 import {
   Card,
