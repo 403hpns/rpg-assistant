@@ -23,6 +23,7 @@ import {
 import { Loader2Icon } from 'lucide-react';
 import { startTransition, useActionState, useRef } from 'react';
 import { signIn } from '@/app/[locale]/actions/auth';
+import { useTranslations } from 'next-intl';
 
 const formSchema = z.object({
   name: z.string().min(1, { message: 'Nazwa użytkownika jest wymagana' }),
@@ -33,6 +34,7 @@ const formSchema = z.object({
 
 export function LoginForm() {
   const [state, action, pending] = useActionState(signIn, undefined);
+  const t = useTranslations('login');
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -53,10 +55,8 @@ export function LoginForm() {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Wprowadź dane, aby zalogować się na swoje konto.
-        </CardDescription>
+        <CardTitle className="text-2xl">{t('card.title')}</CardTitle>
+        <CardDescription>{t('card.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -71,11 +71,12 @@ export function LoginForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nazwa użytkownika</FormLabel>
+                    <FormLabel>{t('form.inputs.name.label')}</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Podaj nazwę użytkownika"
+                        placeholder={t('form.inputs.name.placeholder')}
+                        data-cy="username"
                         {...field}
                       />
                     </FormControl>
@@ -90,11 +91,12 @@ export function LoginForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hasło</FormLabel>
+                    <FormLabel>{t('form.inputs.password.label')}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Podaj hasło"
+                        placeholder={t('form.inputs.password.placeholder')}
+                        data-cy="password"
                         {...field}
                       />
                     </FormControl>
@@ -104,20 +106,24 @@ export function LoginForm() {
               />
             </div>
 
-            <Button type="submit" className="w-full" disabled={pending}>
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={pending}
+              data-cy="login-button">
               {pending ? (
                 <div className="flex items-center gap-1.5">
                   <Loader2Icon className="animate-spin" /> Logowanie...
                 </div>
               ) : (
-                'Zaloguj się'
+                <>{t('form.submit')}</>
               )}
             </Button>
 
             <div className="mt-4 text-center text-sm">
-              Nie masz konta?{' '}
+              {t('card.footer.noAccountText')}{' '}
               <a href="/register" className="underline">
-                Zarejestruj się
+                {t('card.footer.noAccountCta')}
               </a>
             </div>
           </form>

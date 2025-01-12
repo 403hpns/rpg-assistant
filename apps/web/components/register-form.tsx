@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/card';
 import Link from 'next/link';
 import { Loader2 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 const formSchema = z
   .object({
@@ -46,6 +47,8 @@ const formSchema = z
   });
 
 export function RegisterForm() {
+  const t = useTranslations('register');
+
   const mutation = useMutation({
     mutationFn: async (formData: z.infer<typeof formSchema>) => {
       return await apiClient.post('/api/v1/auth/register', formData, {
@@ -78,10 +81,8 @@ export function RegisterForm() {
   return (
     <Card className="mx-auto max-w-sm">
       <CardHeader>
-        <CardTitle className="text-2xl">Rejestracja</CardTitle>
-        <CardDescription>
-          Wprowadź dane, aby założyć nowe konto w aplikacji
-        </CardDescription>
+        <CardTitle className="text-2xl">{t('card.title')}</CardTitle>
+        <CardDescription>{t('card.description')}</CardDescription>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -92,11 +93,11 @@ export function RegisterForm() {
                 name="name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Nazwa użytkownika</FormLabel>
+                    <FormLabel>{t('form.inputs.name.label')}</FormLabel>
                     <FormControl>
                       <Input
                         type="text"
-                        placeholder="Podaj nazwę użytkownika"
+                        placeholder={t('form.inputs.name.placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -110,11 +111,11 @@ export function RegisterForm() {
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>E-mail</FormLabel>
+                    <FormLabel>{t('form.inputs.email.label')}</FormLabel>
                     <FormControl>
                       <Input
                         type="email"
-                        placeholder="Podaj adres e-mail"
+                        placeholder={t('form.inputs.email.placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -128,11 +129,11 @@ export function RegisterForm() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Hasło</FormLabel>
+                    <FormLabel>{t('form.inputs.password.label')}</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Podaj hasło"
+                        placeholder={t('form.inputs.password.placeholder')}
                         {...field}
                       />
                     </FormControl>
@@ -146,11 +147,15 @@ export function RegisterForm() {
                 name="confirmPassword"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Powtórz hasło</FormLabel>
+                    <FormLabel>
+                      {t('form.inputs.confirmPassword.label')}
+                    </FormLabel>
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="Podaj hasło"
+                        placeholder={t(
+                          'form.inputs.confirmPassword.placeholder'
+                        )}
                         {...field}
                       />
                     </FormControl>
@@ -171,12 +176,12 @@ export function RegisterForm() {
                     Rejestrowanie...
                   </span>
                 ) : (
-                  'Zarejestruj się'
+                  <>{t('form.submit')}</>
                 )}
               </Button>
               <Link href="/login">
                 <Button variant="outline" className="w-full">
-                  Wróć do logowania
+                  {t('form.back')}
                 </Button>
               </Link>
             </div>
