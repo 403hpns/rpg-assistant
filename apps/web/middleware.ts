@@ -1,10 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import createMiddleware from 'next-intl/middleware';
+import { routing } from './i18n/routing';
 
 const protectedRoutes = ['/dashboard'];
 const publicRoutes = ['/', '/login', '/register'];
 
 export default async function middleware(req: NextRequest) {
+  const intlMiddleware = createMiddleware(routing);
+  const intlResponse = intlMiddleware(req);
+
+  if (intlResponse) return intlResponse;
+
   const path = req.nextUrl.pathname;
   const isProtectedRoute = protectedRoutes.some((route) =>
     path.startsWith(route)
@@ -47,5 +54,8 @@ export default async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+  matcher: [
+    '/((?!api|_next/static|_next/image|.*\\.png$).*)',
+    '/(pl|en)/:path*',
+  ],
 };
