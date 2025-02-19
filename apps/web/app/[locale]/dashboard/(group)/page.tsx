@@ -11,6 +11,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { getServerSession } from '@/lib/auth';
 import apiClient from '@/lib/axios';
+import { gql, useQuery } from '@apollo/client';
 import {
   Calendar,
   ChevronRight,
@@ -26,6 +27,16 @@ import Link from 'next/link';
 export default async function Page() {
   const session = await getServerSession();
   const cookieStore = await cookies();
+
+  const { data } = useQuery(gql`
+    query GetUsers {
+      getUsers {
+        id
+      }
+    }
+  `);
+
+  console.log(data);
 
   if (!session) {
     return (

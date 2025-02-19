@@ -1,10 +1,10 @@
+import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
-import { DataSource, Repository } from 'typeorm';
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
-import { CACHE_MANAGER } from '@nestjs/cache-manager';
 import { type Cache } from 'cache-manager';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
+import { DataSource, Repository } from 'typeorm';
+import { User } from './user.entity';
 
 export type FindOneQuery = Partial<Pick<User, 'id' | 'name'>>;
 
@@ -20,14 +20,12 @@ export class UsersService {
 
   async findAll() {
     const users = await this.usersRepository.find();
-
-    return { success: true, count: users.length, data: users };
+    return users;
   }
 
   async findOne(query: FindOneQuery) {
     const user = await this.usersRepository.findOne({
       where: query,
-      relations: ['campaigns', 'sessions'],
     });
 
     if (!user) {

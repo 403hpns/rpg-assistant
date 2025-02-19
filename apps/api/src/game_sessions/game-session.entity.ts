@@ -1,4 +1,4 @@
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,
@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 
 @Entity({ name: 'game_sessions' })
-@Unique(['name', 'user', 'campaign'])
+@Unique(['name', 'ownerId', 'campaign'])
 export class GameSession {
   @PrimaryGeneratedColumn()
   id: number;
@@ -19,7 +19,7 @@ export class GameSession {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   description?: string;
 
   @ManyToOne(() => GameCampaign, (campaign) => campaign.sessions, {
@@ -28,16 +28,25 @@ export class GameSession {
   @JoinColumn({ name: 'campaign_id' })
   campaign: GameCampaign;
 
+  @Column({ name: 'campaign_id', nullable: true })
+  campaignId: number;
+
   @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'owner_id' })
-  user: User;
+  owner: User;
 
-  @Column({ default: new Date() })
-  start_date: Date;
+  @Column({ name: 'owner_id', nullable: true })
+  ownerId: number;
+
+  @Column({ name: 'start_date', default: new Date() })
+  startDate: Date;
+
+  @Column({ name: 'end_date', default: new Date() })
+  endDate: Date;
 
   @CreateDateColumn({ name: 'created_at' })
-  created_at: Date;
+  createdAt: Date;
 
   @CreateDateColumn({ name: 'updated_at' })
-  updated_at: Date;
+  updatedAt: Date;
 }

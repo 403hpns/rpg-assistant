@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
-import { InvitationsService } from './invitations.service';
-import { InvitationsController } from './invitations.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Invitation } from './invitations.entity';
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
-import { User } from 'src/users/user.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { GameCampaignsModule } from 'src/campaigns/game-campaigns.module';
+import { User } from 'src/users/user.entity';
+import { InvitationsController } from './invitations.controller';
+import { Invitation } from './invitations.entity';
+import { InvitationsService } from './invitations.service';
 
 @Module({
   imports: [

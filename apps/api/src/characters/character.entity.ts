@@ -1,4 +1,4 @@
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { User } from 'src/users/user.entity';
 import {
   Column,

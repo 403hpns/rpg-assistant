@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 
-import QueryProvider from '../../providers/query-client-provider';
-import { AuthProvider } from '@/contexts/auth-context';
-import { ThemeProvider } from '../../providers/theme-provider';
-import { CampaignProvider } from '@/contexts/campaign-context';
 import { Toaster } from '@/components/ui/toaster';
+import { AuthProvider } from '@/contexts/auth-context';
+import { CampaignProvider } from '@/contexts/campaign-context';
+import QueryProvider from '../../providers/query-client-provider';
+import { ThemeProvider } from '../../providers/theme-provider';
 
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 
+import ApolloClientProvider from '@/providers/apollo-provider';
 import '@/styles/globals.css';
 import { routing } from '../../i18n/routing';
 
@@ -46,22 +47,24 @@ export default async function RootLayout({
   const messages = await getMessages();
 
   return (
-    <QueryProvider>
-      <AuthProvider>
-        <CampaignProvider>
-          <NextIntlClientProvider messages={messages}>
-            <html lang="en" suppressHydrationWarning>
-              <body
-                className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-                <ThemeProvider attribute="class" defaultTheme="dark">
-                  {children}
-                  <Toaster />
-                </ThemeProvider>
-              </body>
-            </html>
-          </NextIntlClientProvider>
-        </CampaignProvider>
-      </AuthProvider>
-    </QueryProvider>
+    <ApolloClientProvider>
+      <QueryProvider>
+        <AuthProvider>
+          <CampaignProvider>
+            <NextIntlClientProvider messages={messages}>
+              <html lang="en" suppressHydrationWarning>
+                <body
+                  className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+                  <ThemeProvider attribute="class" defaultTheme="dark">
+                    {children}
+                    <Toaster />
+                  </ThemeProvider>
+                </body>
+              </html>
+            </NextIntlClientProvider>
+          </CampaignProvider>
+        </AuthProvider>
+      </QueryProvider>
+    </ApolloClientProvider>
   );
 }
