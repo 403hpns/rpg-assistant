@@ -1,4 +1,4 @@
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { Character } from 'src/characters/character.entity';
 import { GameSession } from 'src/game_sessions/game-session.entity';
 import { Invitation } from 'src/invitations/invitations.entity';

@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/user.entity';
 import { FindOneQuery, UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
-import { GameCampaign } from './game-campaign.entity';
+import { GameCampaign } from './entities/game-campaign.entity';
 
 export class AddUserToCampaignDto {
   campaignId: number;
@@ -18,6 +18,10 @@ export class GameCampaignService {
     private readonly gameCampaignRepository: Repository<GameCampaign>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
+
+  async findAll() {
+    return await this.gameCampaignRepository.find();
+  }
 
   async findOne(query: FindOneQuery) {
     const gameCampaign = await this.gameCampaignRepository.findOne({
@@ -59,8 +63,6 @@ export class GameCampaignService {
     if (!campaign) {
       throw new NotFoundException('Campaign with given id does not exist');
     }
-
-    console.log(campaign);
 
     return campaign.characters;
   }

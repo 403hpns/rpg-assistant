@@ -7,12 +7,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { randomUUID } from 'crypto';
-import { Invitation } from './invitations.entity';
-import { Repository } from 'typeorm';
-import { User } from 'src/users/user.entity';
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { GameCampaignService } from 'src/campaigns/game-campaigns.service';
+import { User } from 'src/users/user.entity';
+import { Repository } from 'typeorm';
 import { GenerateInviteDto } from './dtos/generate-invite.dto';
+import { Invitation } from './invitations.entity';
 
 @Injectable()
 export class InvitationsService {

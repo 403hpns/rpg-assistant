@@ -1,0 +1,43 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type GameCampaignDto {
+  description: String
+  id: Int!
+  name: String!
+  ownerId: Int!
+}
+
+type GameSessionDto {
+  campaignId: Int!
+  description: String
+  endDate: String!
+  id: Int!
+  name: String!
+  owner: UserDto!
+  startDate: String!
+}
+
+type Query {
+  getCampaigns: [GameCampaignDto!]!
+  getGameCampaign(id: Float!): GameCampaignDto!
+  getGameSession(id: Float!): GameSessionDto!
+  getGameSessions: [GameSessionDto!]!
+  getUser(id: Float!): UserDto!
+  getUsers: [UserDto!]!
+  stat: Stat!
+}
+
+type Stat {
+  id: String!
+  name: String!
+}
+
+type UserDto {
+  avatar: String
+  email: String!
+  id: Int!
+  name: String!
+  onboarding: Boolean!
+}

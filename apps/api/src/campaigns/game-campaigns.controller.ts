@@ -1,9 +1,16 @@
-import { Body, ConflictException, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  ConflictException,
+  Controller,
+  Get,
+  Param,
+  Post,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameCampaign } from './game-campaign.entity';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateGameCampaignDto } from './dtos/create-game-campaign';
-import { UsersService } from 'src/users/users.service';
+import { GameCampaign } from './entities/game-campaign.entity';
 import { GameCampaignService } from './game-campaigns.service';
 
 @Controller('campaigns')
@@ -40,7 +47,7 @@ export class GameCampaignsControllers {
   }
 
   @Get(':id/characters')
-  async getCampaignCharacters(@Param("id") id: string) {
+  async getCampaignCharacters(@Param('id') id: string) {
     return this.gameCampaignService.getCampaignCharacters(+id);
   }
 }

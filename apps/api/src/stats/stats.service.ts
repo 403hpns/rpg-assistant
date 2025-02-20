@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { GameCampaign } from 'src/campaigns/game-campaign.entity';
+import { GameCampaign } from 'src/campaigns/entities/game-campaign.entity';
 import { GameSession } from 'src/game_sessions/game-session.entity';
 import { Repository } from 'typeorm';
 
@@ -73,7 +73,7 @@ export class StatsService {
 
     const daysToNextSession = nextSession
       ? Math.ceil(
-          (new Date(nextSession.start_date).getTime() - new Date().getTime()) /
+          (new Date(nextSession.startDate).getTime() - new Date().getTime()) /
             (1000 * 3600 * 24),
         )
       : null;
