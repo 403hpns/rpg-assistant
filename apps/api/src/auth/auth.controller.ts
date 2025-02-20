@@ -1,21 +1,21 @@
 import {
-  Controller,
-  Post,
-  Get,
-  UseGuards,
   Body,
-  HttpStatus,
+  Controller,
+  Get,
   HttpCode,
+  HttpStatus,
+  Post,
+  Req,
   Request,
   Res,
-  Req,
+  UseGuards,
 } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { RegisterDto } from './dtos/register.dto';
-import { LocalAuthGuard } from './guards/local-auth.guard';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { type Response } from 'express';
+import { AuthService } from './auth.service';
 import { Public } from './decorators/public.decorator';
+import { RegisterDto } from './dtos/register.dto';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { LocalAuthGuard } from './guards/local-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -56,7 +56,6 @@ export class AuthController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Request() req) {
-    console.log('Me invoked.');
     return req.user;
   }
 

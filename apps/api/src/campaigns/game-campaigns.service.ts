@@ -64,8 +64,6 @@ export class GameCampaignService {
       throw new NotFoundException('Campaign with given id does not exist');
     }
 
-    console.log(campaign);
-
     return campaign.characters;
   }
 }

@@ -41,7 +41,7 @@ export class UsersService {
       const savedUser = await manager.save(User, newUser);
 
       const newDefaultCampaign = manager.create(GameCampaign, {
-        name: 'Domyślna kampania',
+        name: 'Hello, world!',
         ownerId: savedUser.id,
       });
       await manager.save(GameCampaign, newDefaultCampaign);

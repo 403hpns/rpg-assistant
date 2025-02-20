@@ -46,17 +46,17 @@ export class Character {
   @Column()
   weight: number;
 
-  @Column({ name: 'eye_color' })
-  eyeColor: string;
+  @Column({ name: 'eye_color', default: null })
+  eyeColor?: string;
 
-  @Column({ name: 'hair_color' })
-  hairColor: string;
+  @Column({ name: 'hair_color', default: null })
+  hairColor?: string;
 
-  @Column({ name: 'star_sign' })
-  starSign: string;
+  @Column({ name: 'star_sign', default: null })
+  starSign?: string;
 
-  @Column({ name: 'place_of_birth' })
-  placeOfBirth: string;
+  @Column({ name: 'place_of_birth', default: null })
+  placeOfBirth?: string;
 
   @Column()
   siblings: number;
